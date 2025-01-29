@@ -149,153 +149,90 @@ export default function Signup() {
 
 
         const handleSubmit = async () => {
-            if (
-              username &&
-              birthdate &&
-              homeCollege &&
-              homeDepartment
-            ) {
-              const AddUser = {
-                
-                birthdate: trimmedDate,
-                username: username,
-                password: trimmedDate,
-                homeCollege: homeCollege,
-                homeDepartment: homeDepartment
-
-              };
-          
-              const Students = { user_id };
-            
-          
-              try {
-                const token = await tokenValue();
-          
-                // Check for duplicate employee ID, username, and password
-                let isDuplicate = false;
-                let isDuplicateUsernamePassword = false;
-                let usernameview = "R";
-          
-                try {
-                  // Check for existing employee data
-                  const response = await apiUsers(token).get(`/api/User/${user_id}`);
-                  if (response.data) {
-                    isDuplicate = true;
-                  }
-                } catch (error) {
-                  if (axios.isAxiosError(error) && error.response?.status === 404) {
-                    // No duplicate found
-                    isDuplicate = false;
-                  } else {
-                    throw error;
-                  }
-                }
-          
-                // Check user credentials with the login API
-                try {
-                  const response = await apiUsers(token).post(`/api/User`, {
+            if (username && birthdate && homeCollege && homeDepartment) {
+                const AddUser = {
+                    birthdate: trimmedDate,
                     username: username,
                     password: trimmedDate,
-                  });
-                  usernameview = response.data.user.empid;
-                  isDuplicateUsernamePassword  = true;
-                } catch (error) {
-                  
+                    homeCollege: homeCollege,
+                    homeDepartment: homeDepartment
+                };
+        
+                const AddStudents = { user_id };
+                const AddSubject = { user_id };
+        
+                try {
+                    const token = await tokenValue();
+        
+           
+                    let isDuplicateUsernamePassword = false;
+                    let isDuplicateUserID = false;
+        
+        
+                    try {
+                        const response = await apiUsers(token).get(`http://localhost:3001/api/User${user_id}`);
+                      
+                        if (response.data) {
+                            isDuplicateUserID = true;
+                        }
+                    } catch (error) {
+                        if (axios.isAxiosError(error) && error.response?.status === 404) {
+                          
+                            isDuplicateUserID = false;
+                        } else {
+                            throw error;  
+                        }
+                    }
+        
+                    try {
+                        const response = await apiUsers(token).post(`http://localhost:3001/api/User`, {
+                            username: username,
+                            password: trimmedDate
+                        });
+             
+                        if (response.data && response.data.user) {
+                            isDuplicateUsernamePassword = true;
+                        }
+                    } catch (error) {
+             
+                    }
+        
+                
+                    if (isDuplicateUserID) {
+                        toast("Employee ID already exists. Please use a different ID.", "", "warning");
+                        return;  
+                    }
+        
+                    if (isDuplicateUsernamePassword) {
+                        toast("Account already exists. Please see the administrator.", "", "warning");
+                        return;  
+                    }
+        
+                    await apiUsers(token).post(`/api/Subject`, AddSubject);
+                    await apiUsers(token).post(`/api/Students`, AddStudents);
+                    await apiUsers(token).post(`/api/User`, AddUser);
+        
+                    toast("Successfully Saved!", "", "success");
+                    showModal();
+        
+                } catch (error: unknown) {
+             
+                    if (axios.isAxiosError(error)) {
+                        toast(`Error: ${error.response?.data?.message || "API Error"}`, "", "error");
+                    } else if (error instanceof Error) {
+                        toast(`Error: ${error.message}`, "", "error");
+                    } else {
+                        toast("An unexpected error occurred", "", "error");
+                    }
+                    console.error("Error:", error);
                 }
-          
-                // Handle duplicate errors
-                if (isDuplicate) {
-                  toast("Employee ID already exists. Please use a different ID.", "", "warning");
-                  return;
-                }
-          
-                if (isDuplicateUsernamePassword) {
-                  toast("Account already exists. Please see the administrator.", "", "warning");
-                  return;
-                }
-          
-                // Uncomment the following lines to save data to the API
-                // await apiUsers(token).post(`/api/Employees`, AddEmployee);
-                await apiUsers(token).post(`/api/Students`, Students);
-                await apiUsers(token).post(`/api/User`, AddUser);
-          
-                toast("Successfully Saved!", "", "success");
-                showModal();
-              } catch (error: unknown) {
-                if (axios.isAxiosError(error)) {
-                  toast(`Error: ${error.response?.data?.message || "API Error"}`, "", "error");
-                } else if (error instanceof Error) {
-                  toast(`Error: ${error.message}`, "", "error");
-                } else {
-                  toast("An unexpected error occurred", "", "error");
-                }
-                console.error("Error:", error);
-              }
             } else {
-              toast("Please fill all required fields!", "", "warning");
+                toast("Please fill all required fields!", "", "warning");
             }
-          };
+        };
+        
 
-        // const handleSubmit = async () => {
-        //     // Ensure that all required fields are provided
-        //     if (username && password) {
-        //       const AddEmployee = {
-        //         user_id: username,        // You might want to send a unique ID if necessary
-        //         username: username,       // Make sure username is used in both fields
-        //         password: password.trim(),  // Trim the password to avoid leading/trailing spaces
-        //       };
-          
-        //       const User = { 
-        //         user_id: username,        // Send the correct user ID
-        //         password: password.trim(), // Ensure password is trimmed to remove extra spaces
-        //       };
-          
-        //       try {
-        //         const token = await tokenValue();
-          
-        //         // Check for existing user with the same username
-        //         let isDuplicate = false;
-        //         try {
-        //           const response = await apiUsers(token).get(`/api/User/${username}`); // Get user by username
-        //           if (response.data) {
-        //             isDuplicate = true;
-        //           }
-        //         } catch (error) {
-        //           if (axios.isAxiosError(error) && error.response?.status === 404) {
-        //             // No duplicate user found
-        //             isDuplicate = false;
-        //           } else {
-        //             throw error; // Handle any other error
-        //           }
-        //         }
-          
-        //         // Handle duplicate error for user registration
-        //         if (isDuplicate) {
-        //           toast("Username already exists. Please use a different username.", "", "warning");
-        //           return;
-        //         }
-          
-        //         // Make the POST request to register the user
-        //         await apiUsers(token).post(`/api/User`, User); // Register the new user in the system
-          
-        //         toast("Successfully Registered!", "", "success");
-        //         showModal(); // Show modal on success
-        //       } catch (error) {
-        //         // Handle any errors during API requests
-        //         if (axios.isAxiosError(error)) {
-        //           toast(`Error: ${error.response?.data?.message || "API Error"}`, "", "error");
-        //         } else if (error instanceof Error) {
-        //           toast(`Error: ${error.message}`, "", "error");
-        //         } else {
-        //           toast("An unexpected error occurred", "", "error");
-        //         }
-        //         console.error("Error:", error);
-        //       }
-        //     } else {
-        //       toast("Please fill all required fields!", "", "warning"); // Alert if any required field is missing
-        //     }
-        //   };
-          
+ 
   return (
     <div   className="relative min-h-screen bg-gray-100">
        {/* <div className="absolute inset-0 z-[-1]">
@@ -366,13 +303,13 @@ export default function Signup() {
     <div className="relative">
         <select
             value={homeDepartment}
-            onChange={(e) => setHomeDepartment(e.target.value)} // Assuming you have a setHomeDepartment function to update the state
+            onChange={(e) => setHomeDepartment(e.target.value)} 
             className="w-full appearance-none rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-6 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
         >
             <option value="">Select Home Department</option>
             {itemsHomeDepartment.map((item, index) => (
-                <option key={index} value={item.label}> {/* Use item.label if item is an object */}
-                    {item.label} {/* Display the label */}
+                <option key={index} value={item.label}>
+                    {item.label}
                 </option>
             ))}
         </select>
