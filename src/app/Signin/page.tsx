@@ -49,8 +49,7 @@ export default function Home() {
         response.data.user.id,
         response.data.user.empid,
         mockApiResponse.token,
-        schoolyear,
-        semester
+
       );
 
       toast("You have successfully logged in", "", "success");
@@ -68,7 +67,7 @@ export default function Home() {
 
   return (
     <div   className="relative min-h-screen bg-gray-100">
-         <div className="absolute inset-0 z-[-1]">
+       {/* <div className="absolute inset-0 z-[-1]">
         <img
           src="/images/background/background.jpg" 
           alt="Background"
@@ -78,21 +77,29 @@ export default function Home() {
             objectFit: "cover",  
           }}
         />
-      </div>
+      </div> */}
      
       <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
       
 
-      <div className="h-screen max-h-[calc(100vh-80px)] flex  justify-center items-start bg-gray-100 overflow-hidden   ">
+      <div className="h-screen  max-h-[calc(100vh-80px)] flex  justify-center items-start bg-gray-100 overflow-hidden   ">
 
      
       <div className="w-[500px] h-[550px] mt-10 xl:mt-40 border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark rounded-lg">
         
 
-    <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
-      <h2 className="mb-9 text-[22px] font-bold text-black dark:text-white sm:text-title-xl2">
-        Sign in to Human Resource System
-      </h2>
+    <div className="w-full p-4 sm:p-12.5 xl:p-10">
+    <div className="flex justify-center text-[22px] font-bold text-black dark:text-white sm:text-title-xl2">
+        <Image
+         src="/images/logo/UEP-Logo.png" 
+         alt="Description of the image" 
+         width={150} 
+         height={120} 
+        >
+
+        </Image>
+
+      </div>
 
       <div>
         <div className="mb-4">
@@ -104,7 +111,7 @@ export default function Home() {
               value={username}
               onChange={(e) => setusername(e.target.value)}
               type="text"
-              placeholder="Enter your lastname.firstname"
+              placeholder="Student ID"
               className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
             />
             <span className="absolute right-4 top-4">
@@ -136,7 +143,7 @@ export default function Home() {
               value={password}
               onChange={(e) => setpassword(e.target.value)}
               type={showPassword ? "text" : "password"}
-              placeholder="YYYYMMDD"
+              placeholder="Birthday (YYYY-MM-DD)"
               className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
             />
             <span
@@ -165,7 +172,7 @@ export default function Home() {
         <div className="mt-6 text-center">
           <p>
             Don’t have any account?{" "}
-            <Link href="/HR/Signup" className="text-primary">
+            <Link href="/Signup" className="text-primary">
               Sign Up
             </Link>
           </p>

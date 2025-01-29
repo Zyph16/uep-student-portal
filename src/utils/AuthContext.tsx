@@ -1,34 +1,28 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 
 interface AuthContextProps {
-  userid: string | null;
-  empid: string | null;
+  user_id: string | null;
+  username: string | null;
   token: string | null;
-  schoolyear: string | null;
-  semester: string | null;
   login: (
-    userid: string,
-    empid: string,
+    user_id: string,
+    username: string,
     token: string,
-    schoolyear: string,
-    semester: string
   ) => void;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextProps>({
-  userid: null,
-  empid: null,
+  user_id: null,
+  username: null,
   token: null,
-  schoolyear: null,
-  semester: null,
   login: () => {},
   logout: () => {},
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [userid, setuserid] = useState<string | null>(null);
-  const [empid, setempid] = useState<string | null>(null);
+  const [user_id, setuser_id] = useState<string | null>(null);
+  const [username, setusername] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [schoolyear, setSchoolyear] = useState<string | null>(null);
   const [semester, setSemester] = useState<string | null>(null);
@@ -41,32 +35,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const storedSemester = localStorage.getItem("semester");
 
     if (storeduserid && storedempid && storedToken && storedSchoolyear && storedSemester) {
-      setuserid(storeduserid);
-      setempid(storedempid);
+      setuser_id(storeduserid);
+      setusername(storedempid);
       setToken(storedToken);
       setSchoolyear(storedSchoolyear);
       setSemester(storedSemester);
     }
   }, []);
 
-  const login = (userid: string, empid: string, token: string, schoolyear: string, semester: string) => {
-    setuserid(userid);
-    setempid(empid);
+  const login = (user_id: string, username: string, token: string) => {
+    setuser_id(user_id);
+    setusername(username);
     setToken(token);
     setSchoolyear(schoolyear);
     setSemester(semester);
 
     // Store the values in local storage
-    localStorage.setItem("userid", userid);
-    localStorage.setItem("empid", empid);
+    localStorage.setItem("userid", user_id);
+    localStorage.setItem("empid", username);
     localStorage.setItem("token", token);
-    localStorage.setItem("schoolyear", schoolyear);
-    localStorage.setItem("semester", semester);
   };
 
   const logout = () => {
-    setuserid(null);
-    setempid(null);
+    setuser_id(null);
+    setusername(null);
     setToken(null);
     setSchoolyear(null);
     setSemester(null);
@@ -75,7 +67,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ userid, empid, token, schoolyear, semester, login, logout }}
+      value={{ user_id, username, token, login, logout }}
     >
       {children}
     </AuthContext.Provider>
