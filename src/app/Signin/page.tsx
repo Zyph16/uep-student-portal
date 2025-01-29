@@ -1,7 +1,7 @@
 'use client'
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import Image from 'next/image';
 import Header from "@/components/DefaultLayout/Header";
 import useStorage from "@/utils/useStorage"
 import { toast } from "@/utils/toast"
@@ -31,16 +31,16 @@ export default function Home() {
   try {
     const token = await tokenValue();
 
-    // Make the API call
+    
     const response = await apiUsers(token).post(
       `/api/Employees/login`,
       JSON.stringify({ username, password })
     );
 
-    // Log the entire response for debugging
+    
     console.log("API Response:", response);
 
-    // Check if the response was successful
+   
     if (response?.data) {
       const mockApiResponse = {
         token: "InitialToken",
@@ -56,24 +56,38 @@ export default function Home() {
       toast("You have successfully logged in", "", "success");
       window.location.href = "/HR/PersonalInformation";
     } else {
-      // If response data is invalid
+      
       toast("You have entered the wrong username or password", "", "warning");
     }
   } catch (error) {
-    // Handle network or API errors
+   
     console.error("Error during login:", error);
     toast("You have entered the wrong username or password", "", "warning");
   }
 };
 
   return (
-    <div className="">
-      {/* Pass the required props to Header */}
+    <div   className="relative min-h-screen bg-gray-100">
+         <div className="absolute inset-0 z-[-1]">
+        <img
+          src="/images/background/background.jpg" 
+          alt="Background"
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",  
+          }}
+        />
+      </div>
+     
       <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
       
 
       <div className="h-screen max-h-[calc(100vh-80px)] flex  justify-center items-start bg-gray-100 overflow-hidden   ">
-      <div className="w-[500px] h-[450px] mt-10 xl:mt-40 border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark rounded-sm">
+
+     
+      <div className="w-[500px] h-[550px] mt-10 xl:mt-40 border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark rounded-lg">
+        
 
     <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
       <h2 className="mb-9 text-[22px] font-bold text-black dark:text-white sm:text-title-xl2">
