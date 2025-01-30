@@ -1,84 +1,298 @@
 'use client'
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import Image from 'next/image';
 import Header from "@/components/DefaultLayout/Header";
+import PageTransition from "@/components/PageTransition";
 import useStorage from "@/utils/useStorage"
 import { toast } from "@/utils/toast"
+import { ArrowDownward, ArrowDropDown } from "@mui/icons-material";
 import { apiUsers } from "@/utils/api"
-import { tokenValue,  userImage } from "@/utils/utility"
+import { tokenValue,  userId,  userImage } from "@/utils/utility"
 import { useAuth } from "@/utils/AuthContext";
 import { FaRegEye,FaRegEyeSlash  } from "react-icons/fa";
+import axios from "axios";
 
 
 
-export default function Home() {
+interface ItemHomeCollege {
+    label: string;
+  }
+  
+  interface ItemHomeDepartment {
+  label: string;
+  }
+  
+interface Signup{
+    user_id: string;
+    birthdate: string;
+    username: string;
+    password: string;
+}
+  
+export default function Signup() {
+    const [entries, setEntries] = useState<Signup[]>([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const showModal = () => setIsModalVisible(true);
+    const hideModal = () => setIsModalVisible(false);
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
+  const [user_id, setuser_id] = useState('');
+  const [birthdate, setbirthdate] = useState('');
   const [username, setusername] = useState('');
   const [password, setpassword] = useState('');
   const [schoolyear, setschoolyear] = useState('');
   const [semester, setsemester] = useState('');
   const [error, setError] = useState('');
   const { login } = useAuth();
-    const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [homeCollege, setHomeCollege] = useState('');
+  const [homeDepartment, setHomeDepartment] = useState('');
+  const trimmedDate = birthdate.replace(/-/g, '');
+  const selectRef = useRef<HTMLSelectElement>(null);
   
     const togglePasswordVisibility = () => {
       setShowPassword((prevState) => !prevState);
     };
 
+    const itemsHomeCollege= [
+        { label: 'College Of Agriculture, Fisheries and Natural Resources' },
+        { label: 'College Of Arts and Communication' },
+        { label: 'College Of Business Administration' },
+        { label: 'College Of Criminal Justice' },
+        { label: 'College Of Education' },
+        { label: 'College Of Engineering' },
+        { label: 'College Of Law' },
+        { label: 'College Of Nursing and Allied Health Sciences' },
+        { label: 'College Of Science' },
+        { label: 'College Of Veterinary Medicine' },
+      ];
+  
+      let itemsHomeDepartment: { label: string }[] = [];
+        if (homeCollege === 'College Of Agriculture, Fisheries and Natural Resources') {
+          itemsHomeDepartment = [
+            { label: 'Agribusiness and Agricultural Economics' },
+            { label: 'Agricultural Education' },
+            { label: 'Animal Science' },
+            { label: 'Crop and Soil Science' },
+            { label: 'Fisheries' },
+            { label: 'Forestry' },
+            { label: 'Plant Protection' },
+          ];
+        } else if (homeCollege === 'College Of Arts and Communication') {
+          itemsHomeDepartment = [
+            { label: 'Languages and Communication' },
+            { label: 'Physical Education' },
+            { label: 'Social Science' },
+          ];
+        } else if (homeCollege === 'College Of Business Administration') {
+          itemsHomeDepartment = [
+            { label: 'Cooperative' },
+            { label: 'Accountancy' },
+            { label: 'Entrepreneurship' },
+            { label: 'Hospitality Management' },
+            { label: 'Human Resource Management' },
+            { label: 'Business Economics' },
+            { label: 'Marketing Management' },
+            { label: 'Cooperative Management' },
+          ];
+        } else if (homeCollege === 'College Of Criminal Justice') {
+          itemsHomeDepartment = [
+            { label: 'Criminology' },
+          ];
+        } else if (homeCollege === 'College Of Education') {
+          itemsHomeDepartment = [
+            { label: 'Elementary Teacher Education' },
+            { label: 'Laboratory Elementary School' },
+            { label: 'Laboratory High School' },
+            { label: 'Physical Education' },
+            { label: 'Secondary Teacher Education' },
+            { label: 'Technology and Livelihood' },
+            { label: 'Technology and Livelihood Education' },
+          ];
+        } else if (homeCollege === 'College Of Engineering') {
+          itemsHomeDepartment = [
+            { label: 'Electrical Engineering' },
+            { label: 'Mechanical Engineering' },
+            { label: 'Engineering Technology' },
+            { label: 'Civil Engineering' },
+            { label: 'Agricultural And Biosystems Engineering' },
+          ];
+        } else if (homeCollege === 'College Of Law') {
+          itemsHomeDepartment = [
+            { label: 'Law' },
+          ];
+        } else if (homeCollege === 'College Of Nursing and Allied Health Sciences') {
+          itemsHomeDepartment = [
+            { label: 'Nursing' },
+            { label: 'Radiologic Technology' },
+          ];
+        } else if (homeCollege === 'College Of Science') {
+          itemsHomeDepartment = [
+            { label: 'Biological Science' },
+            { label: 'Environmental Science' },
+            { label: 'Information Technology' },
+            { label: 'Mathematics' },
+            { label: 'Physical Science' },
+          ];
+        } else if (homeCollege === 'College Of Veterinary Medicine') {
+          itemsHomeDepartment = [
+            { label: 'Basic Veterinary Medicine' },
+            { label: 'Basic Veterinary Medicine / Meat Technology' },
+            { label: 'Basic Veterinary Sciences' },
+            { label: 'Clinical Sciences' },
+            { label: 'Meat Technology' },
+            { label: 'Paraclinical and Clinical Sciences' },
+          ];
+        }
+        
+        const handleSubmit = async () => {
+          if (username && birthdate) {
+            const AddUser = {
+              username,
+              birthdate,
+              password: trimmedDate, // Using birthdate as password
+            };
+            
+            try {
+              const token = await tokenValue();
+              
+              // Check if username already exists
+              let isDuplicateUsername = false;
+              
+              try {
+                const response = await apiUsers(token).post(
+                  `http://localhost:3001/api/users/${ username }`
+                  
+                );
+                if (response.data.exists) {
+                  isDuplicateUsername = true;
+                }
+              } catch (error) {
+                console.error("Error checking username:", error);
+              }
+        
+              // Handle duplicate errors
+              if (isDuplicateUsername) {
+                toast("Account already exists. Please see the administrator.", "", "warning");
+                return;
+              }
+        
+              // Register user only if username does not exist
+              await apiUsers(token).post(`http://localhost:3001/api/users/register`, AddUser);
+        
+              // Success message
+              toast("Successfully Saved!", "", "success");
+              showModal();
+            } catch (error: unknown) {
+              if (axios.isAxiosError(error)) {
+                toast(` ${error.response?.data?.message || "Username Already Exist"}`, "", "error");
+              } else if (error instanceof Error) {
+                toast(`Error: ${error.message}`, "", "error");
+              } else {
+                toast("An unexpected error occurred", "", "error");
+              }
+              console.error("Error:", error);
+            }
 
-  const handleSubmit = async () => {
-  try {
-    const token = await tokenValue();
-
-    // Make the API call
-    const response = await apiUsers(token).post(
-      `/api/Employees/login`,
-      JSON.stringify({ username, password })
-    );
-
-    // Log the entire response for debugging
-    console.log("API Response:", response);
-
-    // Check if the response was successful
-    if (response?.data) {
-      const mockApiResponse = {
-        token: "InitialToken",
-      };
-      login(
-        response.data.user.id,
-        response.data.user.empid,
-        mockApiResponse.token,
-        schoolyear,
-        semester
-      );
-
-      toast("You have successfully logged in", "", "success");
-      window.location.href = "/HR/PersonalInformation";
-    } else {
-      // If response data is invalid
-      toast("You have entered the wrong username or password", "", "warning");
-    }
-  } catch (error) {
-    // Handle network or API errors
-    console.error("Error during login:", error);
-    toast("You have entered the wrong username or password", "", "warning");
-  }
-};
-
+            
+            
+          } else {
+            toast("Please fill all required fields!", "", "warning");
+          }
+        };
+          
+ 
   return (
-    <div className="">
-      {/* Pass the required props to Header */}
+   <>
+        <PageTransition>
+        <div   className="relative min-h-screen bg-gray-100">
+       {/* <div className="absolute inset-0 z-[-1]">
+        <img
+          src="/images/background/background.jpg" 
+          alt="Background"
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",  
+          }}
+        />
+      </div> */}
+     
       <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
       
 
-      <div className="h-screen max-h-[calc(100vh-80px)] flex  justify-center items-start bg-gray-100 overflow-hidden   ">
-      <div className="w-[500px] h-[450px] mt-10 xl:mt-40 border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark rounded-sm">
+      <div className="h-screen  max-h-[calc(100vh-80px)] flex  justify-center items-start bg-gray-100 overflow-auto  ">
 
-    <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
-      <h2 className="mb-9 text-[22px] font-bold text-black dark:text-white sm:text-title-xl2">
-        Sign in to Human Resource System
-      </h2>
+     
+      <div className="w-[500px] h-[700px]   xl:mt-15 border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark rounded-lg">
+        
+
+    <div className="w-full p-4 sm:p-12.5 xl:p-10">
+    <div className="flex justify-center text-[22px] font-bold text-black dark:text-white sm:text-title-xl2">
+    <Image
+  src="/images/logo/UEP-Logo.png"
+  width={100} // Change based on actual dimensions
+  height={100} // Adjust accordingly
+  style={{ width: "auto", height: "auto" }}
+  alt="UEP Logo"
+>
+
+        </Image>
+
+      </div>
+
+      <div className="mb-4">
+                  <label className="mb-2.5 block font-medium text-black dark:text-white">
+                      Home College
+                  </label>
+                  <div className="relative">
+                    <label className="w-full block">
+                      <select
+                        value={homeCollege}
+                        onChange={(e) => setHomeCollege(e.target.value)}
+                        className="w-full appearance-none rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-6 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                      >
+                        <option value="">Select Home College</option>
+                        {itemsHomeCollege.map((item, index) => (
+                          <option key={index} value={item.label}>
+                            {item.label}
+                          </option>
+                        ))}
+                      </select>
+                      <span className="absolute right-4 top-4 pointer-events-none">
+                        <ArrowDropDown className="text-[23px] text-stone-600" />
+                      </span>
+                    </label>
+                    </div>
+</div>
+
+<div className="mb-4">
+    <label className="mb-2.5 block font-medium text-black dark:text-white">
+        Home Department
+    </label>
+    <label className="w-full block">
+    <div className="relative">
+        <select
+            value={homeDepartment}
+            onChange={(e) => setHomeDepartment(e.target.value)} 
+            className="w-full appearance-none rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-6 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+        >
+            <option value="">Select Home Department</option>
+            {itemsHomeDepartment.map((item, index) => (
+                <option key={index} value={item.label}>
+                    {item.label}
+                </option>
+            ))}
+        </select>
+        <span className="absolute right-4 top-4 pointer-events-none">
+            <ArrowDropDown className="text-[23px] text-stone-600" />
+        </span>
+    </div>
+    </label>
+</div>
 
       <div>
         <div className="mb-4">
@@ -90,7 +304,7 @@ export default function Home() {
               value={username}
               onChange={(e) => setusername(e.target.value)}
               type="text"
-              placeholder="Enter your lastname.firstname"
+              placeholder="Student ID"
               className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
             />
             <span className="absolute right-4 top-4">
@@ -119,10 +333,10 @@ export default function Home() {
           </label>
           <div className="relative">
             <input
-              value={password}
-              onChange={(e) => setpassword(e.target.value)}
-              type={showPassword ? "text" : "password"}
-              placeholder="YYYYMMDD"
+              value={birthdate}
+              onChange={(e) => setbirthdate(e.target.value)}
+              type="date"
+              placeholder="Birthday (YYYY-MM-DD)"
               className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
             />
             <span
@@ -144,18 +358,20 @@ export default function Home() {
             type="submit"
             className="inline-flex items-center w-22 h-10 justify-center rounded-md bg-blue-600 px-10 py-4 text-center font-medium text-white hover:bg-opacity-90"
           >
-            Login
+            Register
           </button>
         </div>
 
         <div className="mt-6 text-center">
-          <p>
-            Don’t have any account?{" "}
-            <Link href="/HR/Signup" className="text-primary">
-              Sign Up
-            </Link>
-          </p>
-        </div>
+                <p>
+                  Already have an account?{" "}
+                  <Link href="/Signin" className="text-primary">
+                    Sign In
+                  </Link>
+                </p>
+          </div>
+
+       
       </div>
     </div>
   </div>
@@ -163,5 +379,8 @@ export default function Home() {
 
       
     </div>
+
+        </PageTransition>
+   </>
   );
 }

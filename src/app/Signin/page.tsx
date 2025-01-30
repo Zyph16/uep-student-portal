@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from 'next/image';
 import Header from "@/components/DefaultLayout/Header";
+import PageTransition from "@/components/PageTransition";
 import useStorage from "@/utils/useStorage";
 import { toast } from "@/utils/toast";
 import { apiUsers } from "@/utils/api";
@@ -25,41 +26,41 @@ export default function Home() {
   };
 
   const handleSubmit = async () => {
-    // Display an error if username or password is empty
+   
     if (!username || !password) {
       setError("Username and Password are required.");
       return;
     }
   
     try {
-      // Call the login API with username and password
+     
       const response = await fetch("http://localhost:3001/api/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, password }), // Sending credentials to backend
+        body: JSON.stringify({ username, password }), 
       });
   
-      const data = await response.json(); // Parse the response
+      const data = await response.json();
   
       console.log("API Response:", data);
   
-      // Check for successful response
+     
       if (response.ok && data.token) {
-        // Store the token and user details in localStorage
+        
         localStorage.setItem("authToken", data.token);
         localStorage.setItem("userId", data.user.id);
         localStorage.setItem("username", data.user.username);
   
-        // Log the user in via context (if you're using context for global auth state)
+    
         login(data.user.id, data.user.username, data.token);
   
-        // Notify the user and redirect
+      
         toast("You have successfully logged in", "", "success");
-        window.location.href = "/Home"; // Redirect after login (ensure "/Home" route is valid)
+        window.location.href = "/Home"; 
       } else {
-        // Handle login errors (invalid credentials)
+  
         toast(data.error || "Invalid credentials. Please try again.", "", "warning");
       }
     } catch (error) {
@@ -70,7 +71,9 @@ export default function Home() {
   
 
   return (
-    <div className="relative min-h-screen bg-gray-100">
+   <>
+      <PageTransition>
+      <div className="relative min-h-screen bg-gray-100">
       <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
       <div className="h-screen max-h-[calc(100vh-80px)] flex justify-center items-start bg-gray-100 overflow-hidden">
@@ -110,7 +113,7 @@ export default function Home() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     type={showPassword ? "text" : "password"}
-                    placeholder="Password"
+                    placeholder="Birthday (YYYY-MM-DD)"
                     className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                   />
                   <span
@@ -149,5 +152,7 @@ export default function Home() {
         </div>
       </div>
     </div>
+      </PageTransition>
+   </>
   );
 }

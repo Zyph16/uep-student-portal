@@ -40,7 +40,7 @@ const menuGroups = [
       {
         icon: <CiLogout />,
         label: "Logout",
-        route: "/HR/",
+        route: "/Signin",
       },
     ],
   },
@@ -53,7 +53,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   return (
     <ClickOutside onClick={() => setSidebarOpen(false)}>
       <aside
-        className={`fixed p-5 left-0 top-0 z-50 flex h-screen w-72 flex-col bg-blue-500 text-white drop-shadow-lg shadow-lg shadow-gray-800 duration-300 ease-in-out ${
+        className={`fixed p-5 left-0 top-0 z-50 flex h-screen w-72 flex-col bg-yellow-500 text-white drop-shadow-lg shadow-lg shadow-blue-800 duration-300 ease-in-out ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0`}
       >
@@ -72,7 +72,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   <li key={itemIndex} className="mb-2">
                     <Link
                       href={item.route}
-                      className="flex text-[20px] items-center gap-3 rounded-lg px-4 py-3 hover:bg-blue-700 transition"
+                      className="flex text-[20px] items-center gap-3 rounded-lg px-4 py-3 hover:bg-yellow-600 transition"
                     >
                       {item.icon}
                       <span>{item.label}</span>

@@ -1,0 +1,109 @@
+/* Component-specific styles */
+.report-container {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+  }
+  
+  .print-button-container {
+    text-align: right;
+    margin: 10px;
+  }
+  
+  .print-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .print-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .report-header {
+    text-align: center;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    background: #f9f9f9;
+  }
+  
+  .report-content {
+    padding: 20px;
+  }
+  
+  .report-section {
+    margin-bottom: 20px;
+    page-break-inside: avoid; /* Avoid breaking inside sections */
+  }
+  
+  .report-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+  }
+  
+  .report-table th,
+  .report-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .report-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .report-footer {
+    text-align: center;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+    background: #f9f9f9;
+  }
+  
+  /* Styles for printing */
+  @media print {
+    @page {
+      size: A4; /* Specify A4 paper size */
+      margin: 20mm; /* Adjust margins */
+    }
+  
+    .report-header,
+    .report-footer {
+      position: fixed;
+      left: 0;
+      right: 0;
+      background: white;
+    }
+  
+    .report-header {
+      top: 0;
+    }
+  
+    .report-footer {
+      bottom: 0;
+    }
+  
+    .report-content {
+      margin-top: 80px; /* Adjust based on header height */
+      margin-bottom: 50px; /* Adjust based on footer height */
+    }
+  
+    .report-section {
+      break-inside: avoid-page;
+      page-break-inside: avoid;
+    }
+  
+    .report-table {
+      break-inside: avoid;
+    }
+  
+    /* Hide the print button when printing */
+    .print-button-container {
+      display: none;
+    }
+  }
+  
