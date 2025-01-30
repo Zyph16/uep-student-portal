@@ -148,69 +148,226 @@ export default function Signup() {
         }
 
 
-        const handleSubmit = async () => {
-            if (!username || !birthdate || !homeCollege || !homeDepartment) {
-              toast("Please fill all required fields!", "", "warning");
-              return;
-            }
+        // const handleSubmit = async () => {
+        //     if (!username || !birthdate || !homeCollege || !homeDepartment) {
+        //       toast("Please fill all required fields!", "", "warning");
+        //       return;
+        //     }
         
-            const userData = {
+        //     const userData = {
+        //       username,
+        //       birthdate,
+        //       password: birthdate, // Using birthdate as the password
+        //     };
+        
+        //     const studentData = { user_id: username, birthdate };
+        //     const subjectData = { user_id: username };
+        
+        //     try {
+        //       const token = await tokenValue();
+        
+        //       let isDuplicateUsername = false;
+        //       let isDuplicateUserID = false;
+        
+        //       // Check for duplicate UserID (for the students table)
+        //       try {
+        //         const response = await apiUsers(token).post(`/api/users/register`, userData);
+        //         if (response.data && response.data.exists) {
+        //           isDuplicateUserID = true;
+        //         }
+        //       } catch (error) {
+        //         if (axios.isAxiosError(error) && error.response?.status === 404) {
+        //           isDuplicateUserID = false;
+        //         } else {
+        //           throw error;
+        //         }
+        //       }
+        
+        //       // Check for duplicate Username (for the users table)
+        //       try {
+        //         const response = await apiUsers(token).post(`/api/users/check-username`, { username });
+        //         if (response.data && response.data.exists) {
+        //           isDuplicateUsername = true;
+        //         }
+        //       } catch (error) {
+        //         // Handle error if needed
+        //       }
+        
+        //       // Show appropriate toast if duplicates are found
+        //       if (isDuplicateUserID) {
+        //         toast("Employee ID already exists. Please use a different ID.", "", "warning");
+        //         return;
+        //       }
+        
+        //       if (isDuplicateUsername) {
+        //         toast("Account already exists. Please see the administrator.", "", "warning");
+        //         return;
+        //       }
+        
+        //       // Add data to all necessary tables
+        //       await apiUsers(token).post(`/api/subjects`, subjectData);
+        //       await apiUsers(token).post(`/api/students`, studentData);
+        //       await apiUsers(token).post(`/api/users`, userData);
+        
+        //       toast("Successfully Saved!", "", "success");
+        //     } catch (error) {
+        //       if (axios.isAxiosError(error)) {
+        //         toast(`Error: ${error.response?.data?.message || "API Error"}`, "", "error");
+        //       } else if (error instanceof Error) {
+        //         toast(`Error: ${error.message}`, "", "error");
+        //       } else {
+        //         toast("An unexpected error occurred", "", "error");
+        //       }
+        //       console.error("Error:", error);
+        //     }
+        //   };
+        // const handleSubmit = async () => {
+        //   // Check if all required fields are filled
+        //   if (username && birthdate) {
+        //     const addUser = {
+        //       username,
+        //       birthdate,
+        //       password: birthdate, // Using birthdate as password
+        //     };
+        
+        //       // const studentData = { user_id: username, birthdate };
+        //       // const subjectData = { user_id: username };
+        
+        //     try {
+        //       const token = await tokenValue(); // Get token from storage or context
+        
+        //       // Check for duplicate user ID
+        //       let isDuplicateUserID = false;
+        //       try {
+        //         const response = await apiUsers(token).get(`http://localhost:3001/api/users/${username}`);
+        //         if (response.data && response.data.exists) {
+        //           isDuplicateUserID = true;
+        //         }
+        //       } catch (error) {
+        //         if (axios.isAxiosError(error) && error.response?.status === 404) {
+        //           isDuplicateUserID = false;
+        //         } else {
+        //           throw error;
+        //         }
+        //       }
+        
+        //       // Check if Username already exists
+        //       let isDuplicateUsername = false;
+        //       try {
+        //         const response = await apiUsers(token).post("http://localhost:3001/api/users/register");
+        //         if (response.data && response.data.exists) {
+        //           isDuplicateUsername = true;
+        //         }
+        //       } catch (error) {
+        //         console.error("Error checking username", error);
+        //       }
+        
+        //       // Handle duplicate errors for UserID and Username
+        //       if (isDuplicateUserID) {
+        //         toast("Employee ID already exists. Please use a different ID.", "", "warning");
+        //         return;
+        //       }
+        
+        //       if (isDuplicateUsername) {
+        //         toast("Account already exists. Please see the administrator.", "", "warning");
+        //         return;
+        //       }
+        
+        //       // Register student data
+        //       // await apiUsers(token).post("/api/subjects", subjectData);
+        //       // await apiUsers(token).post("/api/students", studentData);
+        //       await apiUsers(token).post("/api/users", addUser);
+        
+        //       // Show success message
+        //       toast("Successfully Registered!", "", "success");
+        
+        //     } catch (error) {
+        //       if (axios.isAxiosError(error)) {
+        //         toast(`Error: ${error.response?.data?.message || "API Error"}`, "", "error");
+        //       } else if (error instanceof Error) {
+        //         toast(`Error: ${error.message}`, "", "error");
+        //       } else {
+        //         toast("An unexpected error occurred", "", "error");
+        //       }
+        //       console.error("Error:", error);
+        //     }
+        //   } else {
+        //     toast("Please fill all required fields!", "", "warning");
+        //   }
+        // };
+        
+        const handleSubmit = async () => {
+          if (
+     
+            username &&
+            birthdate 
+         
+  
+          ) {
+            const AddUser = {
               username,
               birthdate,
-              password: birthdate, // Using birthdate as the password
+              password:trimmedDate
+   
             };
         
-            const studentData = { user_id: username, birthdate };
-            const subjectData = { user_id: username };
+            // const FamilyBackground = { employeeid };
+            // const FacultyProfile = { employeeid, homeCollege, homeDepartment };
         
             try {
               const token = await tokenValue();
         
-              let isDuplicateUsername = false;
-              let isDuplicateUserID = false;
+              // Check for duplicate employee ID, username, and password
+              let isDuplicate = false;
+              let isDuplicateUsernamePassword = false;
+              let usernameview = "R";
         
-              // Check for duplicate UserID (for the students table)
               try {
-                const response = await apiUsers(token).post(`/api/users/register`, userData);
-                if (response.data && response.data.exists) {
-                  isDuplicateUserID = true;
+                // Check for existing employee data
+                const response = await apiUsers(token).get(`http://localhost:3001/api/users/register/${username}`);
+                if (response.data) {
+                  isDuplicate = true;
                 }
               } catch (error) {
                 if (axios.isAxiosError(error) && error.response?.status === 404) {
-                  isDuplicateUserID = false;
+                  // No duplicate found
+                  isDuplicate = false;
                 } else {
                   throw error;
                 }
               }
         
-              // Check for duplicate Username (for the users table)
+              // Check user credentials with the login API
               try {
-                const response = await apiUsers(token).post(`/api/users/check-username`, { username });
-                if (response.data && response.data.exists) {
-                  isDuplicateUsername = true;
-                }
+                const response = await apiUsers(token).post(`http://localhost:3001/api/users/register`, {
+                  username: username,
+                  password: trimmedDate,
+                });
+                usernameview = response.data.user.empid;
+                isDuplicateUsernamePassword  = true;
               } catch (error) {
-                // Handle error if needed
+                
               }
         
-              // Show appropriate toast if duplicates are found
-              if (isDuplicateUserID) {
+              // Handle duplicate errors
+              if (isDuplicate) {
                 toast("Employee ID already exists. Please use a different ID.", "", "warning");
                 return;
               }
         
-              if (isDuplicateUsername) {
+              if (isDuplicateUsernamePassword) {
                 toast("Account already exists. Please see the administrator.", "", "warning");
                 return;
               }
         
-              // Add data to all necessary tables
-              await apiUsers(token).post(`/api/subjects`, subjectData);
-              await apiUsers(token).post(`/api/students`, studentData);
-              await apiUsers(token).post(`/api/users`, userData);
+              // Uncomment the following lines to save data to the API
+              await apiUsers(token).post(`http://localhost:3001/api/users`, AddUser);
+              // await apiUsers(token).post(`/api/FamilyBackground`, FamilyBackground);
+              // await apiUsers(token).post(`/api/FacultyProfile`, FacultyProfile);
         
               toast("Successfully Saved!", "", "success");
-            } catch (error) {
+              showModal();
+            } catch (error: unknown) {
               if (axios.isAxiosError(error)) {
                 toast(`Error: ${error.response?.data?.message || "API Error"}`, "", "error");
               } else if (error instanceof Error) {
@@ -220,8 +377,11 @@ export default function Signup() {
               }
               console.error("Error:", error);
             }
-          };
-
+          } else {
+            toast("Please fill all required fields!", "", "warning");
+          }
+        };
+        
  
   return (
     <div   className="relative min-h-screen bg-gray-100">
