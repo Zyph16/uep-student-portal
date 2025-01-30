@@ -19,38 +19,54 @@ export default function Home() {
   const [error, setError] = useState('');
   const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
-  const [birthdate, setbirthdate] = useState('');
 
   const togglePasswordVisibility = () => {
     setShowPassword((prevState) => !prevState);
   };
 
   const handleSubmit = async () => {
-    if (username && birthdate) {
-      const token = await tokenValue();
-      try {
-        
-        const response = await apiUsers(token).post('/api/users/login', {
-          username: username,
-          password: birthdate // Send the birthdate as the password
-        });
+    // Display an error if username or password is empty
+    if (!username || !password) {
+      setError("Username and Password are required.");
+      return;
+    }
   
-        if (response.data.token) {
-          // Store the JWT token
-          localStorage.setItem('authToken', response.data.token);
-          toast("Login successful!", "", "success");
-        } else {
-          toast("Invalid login credentials", "", "warning");
-        }
-      } catch (error) {
-        console.error("Login error", error);
-        toast("Error during login", "", "error");
+    try {
+      // Call the login API with username and password
+      const response = await fetch("http://localhost:3001/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }), // Sending credentials to backend
+      });
+  
+      const data = await response.json(); // Parse the response
+  
+      console.log("API Response:", data);
+  
+      // Check for successful response
+      if (response.ok && data.token) {
+        // Store the token and user details in localStorage
+        localStorage.setItem("authToken", data.token);
+        localStorage.setItem("userId", data.user.id);
+        localStorage.setItem("username", data.user.username);
+  
+        // Log the user in via context (if you're using context for global auth state)
+        login(data.user.id, data.user.username, data.token);
+  
+        // Notify the user and redirect
+        toast("You have successfully logged in", "", "success");
+        window.location.href = "/Home"; // Redirect after login (ensure "/Home" route is valid)
+      } else {
+        // Handle login errors (invalid credentials)
+        toast(data.error || "Invalid credentials. Please try again.", "", "warning");
       }
-    } else {
-      toast("Please provide both username and password!", "", "warning");
+    } catch (error) {
+      console.error("Error during login:", error);
+      toast("An error occurred. Please try again later.", "", "warning");
     }
   };
-  
   
 
   return (
