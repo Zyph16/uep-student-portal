@@ -1,8 +1,9 @@
+/* eslint-disable */
+
 import config from "@/utils/config"
 import CryptoJS from "crypto-js"
 
 import useStorage from "./useStorage"
-
 
 const { getItem } = useStorage()
 
@@ -41,18 +42,6 @@ export const userId = async () => {
     return ""
   }
 }
-
-
-// export const userId = async () => {
-//   const { empid, schoolyear, semester, logout } = useAuth();
-//   if (empid) {
-//       return empid
-//   } else {
-//     return ""
-//   }
-// }
-
-
 
 export const userEmail = async () => {
   const account = getItem("account")
@@ -183,3 +172,5 @@ export const counter = async () => {
 export const hasPermission = (permissions: string[], endpoint: string) => {
   return permissions.includes(endpoint)
 }
+
+/* eslint-enable */

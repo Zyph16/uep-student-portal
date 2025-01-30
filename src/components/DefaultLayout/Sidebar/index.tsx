@@ -1,21 +1,11 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
+import React from "react";
 import Link from "next/link";
-import Image from "next/image";
 
 import ClickOutside from "@/components/DefaultLayout/ClickOutside";
-import useLocalStorage from "@/hooks/useLocalStorage";
-import { LuFolderInput } from "react-icons/lu";
-import { HiOutlineDocumentSearch } from "react-icons/hi";
-import { PiListMagnifyingGlassBold } from "react-icons/pi";
-import { LuLayoutDashboard } from "react-icons/lu";
-import { MdOutlineBook } from "react-icons/md";
-import { ImProfile } from "react-icons/im";
 import { CgProfile } from "react-icons/cg";
 import { MdManageAccounts } from "react-icons/md";
-import { IoDocumentSharp } from "react-icons/io5";
 import { CiLogout } from "react-icons/ci";
 
 interface SidebarProps {
@@ -47,8 +37,8 @@ const menuGroups = [
 ];
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
-  const pathname = usePathname();
-  const [pageName, setPageName] = useLocalStorage("selectedMenu", "dashboard");
+  
+  
 
   return (
     <ClickOutside onClick={() => setSidebarOpen(false)}>

@@ -1,44 +1,10 @@
 "use client"
-import ReactDOM from "react-dom/client"; 
-import React, { useState, useEffect } from "react";
+
+import React from "react";
 import DefaultLayout from '@/components/DefaultLayout/DefaultLayout'
 import PageTransition from '@/components/PageTransition'
-import { toast } from "@/utils/toast"
-import { apiUsers } from "@/utils/api"
-import { tokenValue,  userImage } from "@/utils/utility"
-import { useAuth } from "@/utils/AuthContext";
-import axios from 'axios';
-
-
-
- interface Subjects{
-  subject_code: string;
-  subject_name: string;
-  schedule_time: string;
-
-
- }
-interface Grades{
-  grade: string;
-  year: number;
-
-}
 const page = () => {
-  const [subjectsGrades, setSubjectsGrades] = useState([]);
-
-  useEffect(() => {
   
-    const fetchSubjectsGrades = async () => {
-      try {
-        const response = await axios.get('http://localhost:3001/api/subjects-grades');
-        setSubjectsGrades(response.data);
-      } catch (error) {
-        console.error("Error fetching subjects and grades", error);
-      }
-    };
-
-    fetchSubjectsGrades();
-  }, []);
   return (
     <>
      <PageTransition>

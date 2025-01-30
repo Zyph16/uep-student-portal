@@ -1,16 +1,17 @@
-import swal from "sweetalert2"
+import swal from "sweetalert2";
+import "animate.css/animate.min.css";
 
-import "animate.css/animate.min.css"
+type SwalIcon = "success" | "error" | "warning" | "info" | "question";
 
-export const toast = (text: string, title: string, icon: any) =>
+export const toast = (text: string, title: string, icon: SwalIcon) =>
   swal.fire({
-    text: text ? text : "",
-    title: title ? title : "",
+    text: text || "",
+    title: title || "",
     icon,
     confirmButtonColor: "#134991",
-  })
+  });
 
-export const toastConfirm = (text: string, title: string, icon: any) =>
+export const toastConfirm = (text: string, title: string, icon: SwalIcon) =>
   swal.fire({
     title,
     text,
@@ -18,10 +19,4 @@ export const toastConfirm = (text: string, title: string, icon: any) =>
     confirmButtonColor: "#134991",
     showCancelButton: true,
     confirmButtonText: "Yes",
-    // showClass: {
-    //   popup: "animate__animated animate__fadeInDown",
-    // },
-    // hideClass: {
-    //   popup: "animate__animated animate__fadeOutUp",
-    // },
-  })
+  });

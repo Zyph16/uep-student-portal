@@ -4,19 +4,14 @@ import Link from "next/link";
 import Image from 'next/image';
 import Header from "@/components/DefaultLayout/Header";
 import PageTransition from "@/components/PageTransition";
-import useStorage from "@/utils/useStorage";
 import { toast } from "@/utils/toast";
-import { apiUsers } from "@/utils/api";
-import { tokenValue } from "@/utils/utility";
 import { useAuth } from "@/utils/AuthContext";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 
 export default function Home() {
-  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
+  
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [schoolyear, setSchoolYear] = useState('');
-  const [semester, setSemester] = useState('');
   const [error, setError] = useState('');
   const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
@@ -29,6 +24,7 @@ export default function Home() {
    
     if (!username || !password) {
       setError("Username and Password are required.");
+      console.log(error)
       return;
     }
   
@@ -74,7 +70,7 @@ export default function Home() {
    <>
       <PageTransition>
       <div className="relative min-h-screen bg-gray-100">
-      <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <Header />
 
       <div className="h-screen max-h-[calc(100vh-80px)] flex justify-center items-start bg-gray-100 overflow-hidden">
         <div className="w-[500px] h-[550px] mt-10 xl:mt-40 border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark rounded-lg">

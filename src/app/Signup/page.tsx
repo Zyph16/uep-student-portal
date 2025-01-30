@@ -1,27 +1,19 @@
 'use client'
-import { useState, useRef } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import Image from 'next/image';
 import Header from "@/components/DefaultLayout/Header";
 import PageTransition from "@/components/PageTransition";
-import useStorage from "@/utils/useStorage"
 import { toast } from "@/utils/toast"
-import { ArrowDownward, ArrowDropDown } from "@mui/icons-material";
+import {  ArrowDropDown } from "@mui/icons-material";
 import { apiUsers } from "@/utils/api"
-import { tokenValue,  userId,  userImage } from "@/utils/utility"
-import { useAuth } from "@/utils/AuthContext";
+import { tokenValue} from "@/utils/utility"
+
 import { FaRegEye,FaRegEyeSlash  } from "react-icons/fa";
 import axios from "axios";
 
 
 
-interface ItemHomeCollege {
-    label: string;
-  }
-  
-  interface ItemHomeDepartment {
-  label: string;
-  }
   
 interface Signup{
     user_id: string;
@@ -31,27 +23,15 @@ interface Signup{
 }
   
 export default function Signup() {
-    const [entries, setEntries] = useState<Signup[]>([]);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const openModal = () => setIsModalOpen(true);
-    const closeModal = () => setIsModalOpen(false);
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const showModal = () => setIsModalVisible(true);
-    const hideModal = () => setIsModalVisible(false);
-  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-  const [user_id, setuser_id] = useState('');
+
+  
   const [birthdate, setbirthdate] = useState('');
   const [username, setusername] = useState('');
-  const [password, setpassword] = useState('');
-  const [schoolyear, setschoolyear] = useState('');
-  const [semester, setsemester] = useState('');
-  const [error, setError] = useState('');
-  const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [homeCollege, setHomeCollege] = useState('');
   const [homeDepartment, setHomeDepartment] = useState('');
   const trimmedDate = birthdate.replace(/-/g, '');
-  const selectRef = useRef<HTMLSelectElement>(null);
+
   
     const togglePasswordVisibility = () => {
       setShowPassword((prevState) => !prevState);
@@ -174,18 +154,18 @@ export default function Signup() {
                 console.error("Error checking username:", error);
               }
         
-              // Handle duplicate errors
+             
               if (isDuplicateUsername) {
                 toast("Account already exists. Please see the administrator.", "", "warning");
                 return;
               }
         
-              // Register user only if username does not exist
+            
               await apiUsers(token).post(`http://localhost:3001/api/users/register`, AddUser);
         
-              // Success message
+             
               toast("Successfully Saved!", "", "success");
-              showModal();
+             
             } catch (error: unknown) {
               if (axios.isAxiosError(error)) {
                 toast(` ${error.response?.data?.message || "Username Already Exist"}`, "", "error");
@@ -221,7 +201,7 @@ export default function Signup() {
         />
       </div> */}
      
-      <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <Header  />
       
 
       <div className="h-screen  max-h-[calc(100vh-80px)] flex  justify-center items-start bg-gray-100 overflow-auto  ">

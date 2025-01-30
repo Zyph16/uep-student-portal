@@ -1,16 +1,16 @@
-const setDefault = (key: any, value: any) => (key ? key : value)
+const setDefault = (key: string | undefined, value: string) => key ?? value;
 
 const config = {
   appUrl: setDefault(
-    `${process.env.NEXT_PUBLIC_SERVICES_APP_URL}`,
+    process.env.NEXT_PUBLIC_SERVICES_APP_URL,
     "http://localhost:3000"
   ),
   apiUrl: setDefault(
-    `${process.env.NEXT_PUBLIC_SERVICES_API_URL}`,
+    process.env.NEXT_PUBLIC_SERVICES_API_URL,
     "http://localhost:3001"
   ),
   secret: setDefault(process.env.NEXT_PUBLIC_REACT_SECRET_KEY, ""),
   authorization: setDefault(process.env.REACT_APP_AUTHORIZATION, ""),
-}
+};
 
-export default config
+export default config;

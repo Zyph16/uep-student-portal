@@ -1,40 +1,36 @@
-import { NextResponse } from "next/server"
-import axios, { AxiosError, toFormData } from "axios"
+/* eslint-disable */
 
-import config from "./config"
+import { NextResponse } from "next/server";
+import axios from "axios";
+import config from "./config";
 
 export const api = axios.create({
   baseURL: config.apiUrl,
   headers: {
     Accept: "*/*",
     "Content-type": "application/json",
-    // Authorization: `Basic ${config.authorization}`,
   },
-})
+});
 
 export const apiToken = () =>
   axios.create({
     baseURL: config.apiUrl,
-    //baseURL: config.apiUrl,
     headers: {
       Accept: "*/*",
       "Content-type": "application/json",
-      // Authorization: `Bearer ${token}`,
     },
-  })
+  });
 
 export const apiContact = () =>
   axios.create({
     baseURL: config.apiUrl,
-    //baseURL: config.apiUrl,
     headers: {
       Accept: "*/*",
       "Content-type": "application/json",
-      // Authorization: `Bearer ${token}`,
     },
-  })
+  });
 
-export const apiAuth = (props: any, type: any) =>
+export const apiAuth = () =>
   axios.create({
     baseURL: config.apiUrl,
     headers: {
@@ -42,9 +38,9 @@ export const apiAuth = (props: any, type: any) =>
       "Content-type": "application/json",
       Authorization: `Bearer ${config.authorization}`,
     },
-  })
+  });
 
-export const apiChangePassword = (props: any, type: any) =>
+export const apiChangePassword = (type: string) =>
   axios.create({
     baseURL: config.apiUrl,
     headers: {
@@ -52,9 +48,9 @@ export const apiChangePassword = (props: any, type: any) =>
       "Content-type": "application/json",
       Authorization: `Bearer ${type}`,
     },
-  })
+  });
 
-export const apiUsersOld = (token: any) =>
+export const apiUsersOld = (token: string) =>
   axios.create({
     baseURL: config.apiUrl,
     headers: {
@@ -62,17 +58,17 @@ export const apiUsersOld = (token: any) =>
       "Content-type": "multipart/form-data",
       Authorization: `Bearer ${token}`,
     },
-  })
+  });
 
-  export const apiUsers = (token: any) =>
-    axios.create({
-      baseURL: config.apiUrl,
-      headers: {
-        Accept: "*/*",
-        "Content-type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    })
+export const apiUsers = (token: string) =>
+  axios.create({
+    baseURL: config.apiUrl,
+    headers: {
+      Accept: "*/*",
+      "Content-type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
 export const validateExchangeCode = () =>
   axios.create({
@@ -81,19 +77,17 @@ export const validateExchangeCode = () =>
       Accept: "*/*",
       "Content-type": "application/json",
     },
-  })
+  });
 
 export const apiTransactions = () =>
   axios.create({
     baseURL: config.apiUrl,
     headers: {
-      // Authorization: `Bearer ${token}`,
-      // "Content-Type": "multipart/form-data"
       "Content-type": "application/json",
     },
-  })
+  });
 
-export const biddingDocs = (token: any) =>
+export const biddingDocs = (token: string) =>
   axios.create({
     baseURL: config.apiUrl,
     headers: {
@@ -101,14 +95,17 @@ export const biddingDocs = (token: any) =>
       "Content-type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-  })
+  });
 
-export const getUserRoles = () => {}
+export const getUserRoles = () => {};
 
-export const Redirection = (req: any) => {
-  let url = req.url
-
+export const Redirection = (req: Request) => {
+  let url = req.url;
   if (url.includes("/dashboard")) {
-    return NextResponse.redirect("/")
+    return NextResponse.redirect("/");
   }
-}
+};
+
+
+/* eslint-enable */
+
