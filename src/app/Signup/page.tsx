@@ -161,7 +161,7 @@ export default function Signup() {
               }
         
             
-              await apiUsers(token).post(`http://localhost:3001/api/users/register`, AddUser);
+              await apiUsers(token).post(`https://backend-seven-chi-74.vercel.app/api/users/register`, AddUser);
         
              
               toast("Successfully Saved!", "", "success");
