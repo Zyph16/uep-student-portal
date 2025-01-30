@@ -149,88 +149,78 @@ export default function Signup() {
 
 
         const handleSubmit = async () => {
-            if (username && birthdate && homeCollege && homeDepartment) {
-                const AddUser = {
-                    birthdate: trimmedDate,
-                    username: username,
-                    password: trimmedDate,
-                    homeCollege: homeCollege,
-                    homeDepartment: homeDepartment
-                };
-        
-                const AddStudents = { user_id };
-                const AddSubject = { user_id };
-        
-                try {
-                    const token = await tokenValue();
-        
-           
-                    let isDuplicateUsernamePassword = false;
-                    let isDuplicateUserID = false;
-        
-        
-                    try {
-                        const response = await apiUsers(token).get(`http://localhost:3001/api/User${user_id}`);
-                      
-                        if (response.data) {
-                            isDuplicateUserID = true;
-                        }
-                    } catch (error) {
-                        if (axios.isAxiosError(error) && error.response?.status === 404) {
-                          
-                            isDuplicateUserID = false;
-                        } else {
-                            throw error;  
-                        }
-                    }
-        
-                    try {
-                        const response = await apiUsers(token).post(`http://localhost:3001/api/User`, {
-                            username: username,
-                            password: trimmedDate
-                        });
-             
-                        if (response.data && response.data.user) {
-                            isDuplicateUsernamePassword = true;
-                        }
-                    } catch (error) {
-             
-                    }
-        
-                
-                    if (isDuplicateUserID) {
-                        toast("Employee ID already exists. Please use a different ID.", "", "warning");
-                        return;  
-                    }
-        
-                    if (isDuplicateUsernamePassword) {
-                        toast("Account already exists. Please see the administrator.", "", "warning");
-                        return;  
-                    }
-        
-                    await apiUsers(token).post(`/api/Subject`, AddSubject);
-                    await apiUsers(token).post(`/api/Students`, AddStudents);
-                    await apiUsers(token).post(`/api/User`, AddUser);
-        
-                    toast("Successfully Saved!", "", "success");
-                    showModal();
-        
-                } catch (error: unknown) {
-             
-                    if (axios.isAxiosError(error)) {
-                        toast(`Error: ${error.response?.data?.message || "API Error"}`, "", "error");
-                    } else if (error instanceof Error) {
-                        toast(`Error: ${error.message}`, "", "error");
-                    } else {
-                        toast("An unexpected error occurred", "", "error");
-                    }
-                    console.error("Error:", error);
-                }
-            } else {
-                toast("Please fill all required fields!", "", "warning");
+            if (!username || !birthdate || !homeCollege || !homeDepartment) {
+              toast("Please fill all required fields!", "", "warning");
+              return;
             }
-        };
         
+            const userData = {
+              username,
+              birthdate,
+              password: birthdate, // Using birthdate as the password
+            };
+        
+            const studentData = { user_id: username, birthdate };
+            const subjectData = { user_id: username };
+        
+            try {
+              const token = await tokenValue();
+        
+              let isDuplicateUsername = false;
+              let isDuplicateUserID = false;
+        
+              // Check for duplicate UserID (for the students table)
+              try {
+                const response = await apiUsers(token).post(`/api/users/register`, userData);
+                if (response.data && response.data.exists) {
+                  isDuplicateUserID = true;
+                }
+              } catch (error) {
+                if (axios.isAxiosError(error) && error.response?.status === 404) {
+                  isDuplicateUserID = false;
+                } else {
+                  throw error;
+                }
+              }
+        
+              // Check for duplicate Username (for the users table)
+              try {
+                const response = await apiUsers(token).post(`/api/users/check-username`, { username });
+                if (response.data && response.data.exists) {
+                  isDuplicateUsername = true;
+                }
+              } catch (error) {
+                // Handle error if needed
+              }
+        
+              // Show appropriate toast if duplicates are found
+              if (isDuplicateUserID) {
+                toast("Employee ID already exists. Please use a different ID.", "", "warning");
+                return;
+              }
+        
+              if (isDuplicateUsername) {
+                toast("Account already exists. Please see the administrator.", "", "warning");
+                return;
+              }
+        
+              // Add data to all necessary tables
+              await apiUsers(token).post(`/api/subjects`, subjectData);
+              await apiUsers(token).post(`/api/students`, studentData);
+              await apiUsers(token).post(`/api/users`, userData);
+        
+              toast("Successfully Saved!", "", "success");
+            } catch (error) {
+              if (axios.isAxiosError(error)) {
+                toast(`Error: ${error.response?.data?.message || "API Error"}`, "", "error");
+              } else if (error instanceof Error) {
+                toast(`Error: ${error.message}`, "", "error");
+              } else {
+                toast("An unexpected error occurred", "", "error");
+              }
+              console.error("Error:", error);
+            }
+          };
 
  
   return (
