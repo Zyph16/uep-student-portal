@@ -151,7 +151,7 @@ export default function Signup() {
               let isDuplicateUsername = false;
         
               try {
-                const response = await apiUsers(token).post(`${API_BASE_URL}/api/users/${username}`);
+                const response = await apiUsers(token).get(`${API_BASE_URL}/api/users/${username}`);
                 if (response.data.exists) {
                   isDuplicateUsername = true;
                 }
