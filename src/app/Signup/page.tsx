@@ -135,18 +135,23 @@ export default function Signup() {
               birthdate,
               password: trimmedDate, // Using birthdate as password
             };
-            
+        
             try {
               const token = await tokenValue();
-              
+        
+              // Base URL from .env
+              const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+        
+              if (!API_BASE_URL) {
+                console.error("API base URL is missing. Check your .env file.");
+                return;
+              }
+        
               // Check if username already exists
               let isDuplicateUsername = false;
-              
+        
               try {
-                const response = await apiUsers(token).post(
-                  `https://backend-seven-chi-74.vercel.app/api/users/${ username }`
-                  
-                );
+                const response = await apiUsers(token).post(`${API_BASE_URL}/api/users/${username}`);
                 if (response.data.exists) {
                   isDuplicateUsername = true;
                 }
@@ -154,21 +159,18 @@ export default function Signup() {
                 console.error("Error checking username:", error);
               }
         
-             
               if (isDuplicateUsername) {
                 toast("Account already exists. Please see the administrator.", "", "warning");
                 return;
               }
         
-            
-              await apiUsers(token).post(`https://backend-seven-chi-74.vercel.app/api/users/register`, AddUser);
+              // Register the user
+              await apiUsers(token).post(`${API_BASE_URL}/api/users/register`, AddUser);
         
-             
               toast("Successfully Saved!", "", "success");
-             
-            } catch (error: unknown) {
+            } catch (error) {
               if (axios.isAxiosError(error)) {
-                toast(` ${error.response?.data?.message || "Error"}`, "", "error");
+                toast(`${error.response?.data?.message || "Error"}`, "", "error");
               } else if (error instanceof Error) {
                 toast(`Error: ${error.message}`, "", "error");
               } else {
@@ -176,14 +178,11 @@ export default function Signup() {
               }
               console.error("Error:", error);
             }
-
-            
-            
           } else {
             toast("Please fill all required fields!", "", "warning");
           }
         };
-          
+        
  
   return (
    <>
