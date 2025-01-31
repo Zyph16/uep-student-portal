@@ -144,7 +144,7 @@ export default function Signup() {
               
               try {
                 const response = await apiUsers(token).post(
-                  `http://localhost:3001/api/users/${ username }`
+                  `https://backend-seven-chi-74.vercel.app/api/users/${ username }`
                   
                 );
                 if (response.data.exists) {
