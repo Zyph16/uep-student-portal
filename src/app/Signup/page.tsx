@@ -168,7 +168,7 @@ export default function Signup() {
              
             } catch (error: unknown) {
               if (axios.isAxiosError(error)) {
-                toast(` ${error.response?.data?.message || "Username Already Exist"}`, "", "error");
+                toast(` ${error.response?.data?.message || "Error"}`, "", "error");
               } else if (error instanceof Error) {
                 toast(`Error: ${error.message}`, "", "error");
               } else {
